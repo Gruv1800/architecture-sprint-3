@@ -38,9 +38,11 @@
 
 
 ### 5. Визуализация контекста системы — диаграмма С4
-```markdown
-[Текст ссылки](URL)
-```
+
+[monolit_c4_context.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/monolit_c4_context.puml)
+
+[monolit_c4_context.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/monolit_c4_context.png)
+
 
 # Задание 2. Проектирование микросервисной архитектуры
 
