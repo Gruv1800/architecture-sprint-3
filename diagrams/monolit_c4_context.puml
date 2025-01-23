@@ -1,0 +1,17 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+title Monolit Context Diagram
+
+Person(user, "User")
+Person(admin, "Administrator")
+System_Boundary(c1, "Тёплый дом") {
+System(Site, "WEB интерфейс", "Сайт компании www.teply-dom.ru")
+System(Application, "Монолитная система", "Управление датчиками. Получение информации с отопительных систем.")
+}
+System_Ext(heatingSystem, "Система отопления", "Датчики и реле, установленные в доме")
+
+Rel(user, Site, "Просмотр текущих показателей, регулировка и управление (вкл\выкл) отоплением")
+Rel(admin,Site, "Регистрация и конфигурация новых устрйоств")
+Rel(Site, Application, "Получение текущих показаний и управление устройствами", "REST")
+Rel(Application,heatingSystem,"Получение текущих показаний и управление устройствами", "REST")
+@enduml
