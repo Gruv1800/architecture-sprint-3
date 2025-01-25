@@ -1,0 +1,26 @@
+@startuml
+title Payment Service Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+System(client, "Web Site \n Mobile App", "Предоставляет пользователям доступ к системе")
+System_Ext(extPaymentSystem, "External Payment Gateway", "Платежный шлюз")
+
+Container_Boundary(paymentSrv, "Еденица развертывания микросервиса PaymentService") {
+  Container(microservice, "PaymentService", "Java, Spring")
+  ContainerDb(db, "PaymentService DB", "PostgeSQL", "Хранение данных по платежам")
+}
+
+Container(microservice, "PaymentService", "Java, Spring") {
+  Component(paymentController, "Payment Controller", "Осуществление платежа, возврата и получение статусов по транзакциям")
+  Component(paymentService, "Payment Service", "Сервисный слой, реализующий платежные операции")
+  Component(paymentDAO, "Payment DAO", "Слой доступа к данным")
+}
+
+Rel(client, paymentController, "REST \n HTTP")
+Rel(paymentController, paymentService, "Uses")
+Rel(paymentService, paymentDAO, "Uses")
+Rel(paymentService, extPaymentSystem, "REST \n HTTP")
+Rel(extPaymentSystem, paymentController, "REST \n HTTP \n колбеки со статусами транзакций")
+Rel(paymentDAO, db, "READ\WRITE \n SQL Queries")
+@enduml

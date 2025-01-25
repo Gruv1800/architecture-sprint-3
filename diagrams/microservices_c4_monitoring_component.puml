@@ -1,0 +1,26 @@
+@startuml
+title Monitoring Service Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+System(client, "Web Site \n Mobile App", "Предоставляет пользователям доступ к системе")
+SystemQueue(kafka, "Kafka", "Топики: device_telemetry, notification")
+
+Container_Boundary(monitoringSrv, "Еденица развертывания микросервиса MonitoringService") {
+  Container(microservice, "MonitoringService", "Java, Spring")
+  ContainerDb(db, "MonitoringService DB", "PostgeSQL", "Хранение агрегированных данных по устройствам")
+}
+
+Container(microservice, "MonitoringService", "Java, Spring") {
+  Component(monitoringController, "Monitoring Controller", "Получение отчетов, графиков и статистики по устройствам")
+  Component(monitoringService, "Monitoring Service", "Сервисный слой, реализующий получение отчетов, графиков и статистики по устройствам")
+  Component(monitoringDAO, "Monitoring DAO", "Слой доступа к данным")
+}
+
+Rel(client, monitoringController, "REST \n HTTP")
+Rel(monitoringController, monitoringService, "Uses")
+Rel(monitoringService, monitoringDAO, "Uses")
+Rel(monitoringDAO, db, "READ\WRITE \n Queries")
+Rel(monitoringService, kafka, "Отправка событий о критическом состоянии устройств")
+Rel(kafka, monitoringService, "Чтение и фильтрация событий с телеметрическими данными устройств")
+@enduml

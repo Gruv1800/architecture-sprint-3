@@ -1,0 +1,24 @@
+@startuml
+title Notification Service Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+SystemQueue(kafka, "Kafka", "Топики: notification")
+System_Ext(firebase, "Firebase Cloud Messaging", "Облачная платформа рассылки уведомлений")
+
+
+Container_Boundary(notificationSrv, "Еденица развертывания микросервиса NotificationService") {
+  Container(microservice, "NotificationService", "Java, Spring")
+  ContainerDb(db, "NotificationService DB", "PostgeSQL", "Хранение уведомлений")
+}
+
+Container(microservice, "NotificationService", "Java, Spring") {
+  Component(notificationService, "Notification Service", "Сервисный слой, реализующий отправку уведомлений")
+  Component(notificationDAO, "Notification DAO", "Слой доступа к данным")
+}
+
+Rel(notificationService, notificationDAO, "Uses")
+Rel(notificationService, firebase, "REST \n HTTP")
+Rel(notificationDAO, db, "READ\WRITE \n Queries")
+Rel(kafka, notificationService, "Чтение уведомлений из других подсистем")
+@enduml

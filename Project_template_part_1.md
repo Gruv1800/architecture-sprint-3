@@ -1,71 +1,112 @@
-Это шаблон для решения **первой части** проектной работы. Структура этого файла повторяет структуру заданий. Заполняйте его по мере работы над решением.
-
 # Задание 1. Анализ и планирование
-
-Чтобы составить документ с описанием текущей архитектуры приложения, можно часть информации взять из описания компании условия задания. Это нормально.
 
 ### 1. Описание функциональности монолитного приложения
 
 **Управление отоплением:**
-
-- Пользователи могут…
-- Система поддерживает…
-- …
+- Пользователи могут включать\отключать отопление;
+- Пользователи могут регулировать температуру;
+- Система поддерживает получение текущего состояния отопительной системы (включена\выключена).
 
 **Мониторинг температуры:**
-
-- Пользователи могут…
-- Система поддерживает…
-- …
+- Пользователи могут регулировать температурный режим;
+- Система поддерживает получение текущих температурных показателей с датчиков;
+- Система поддерживает регистрацию новых датчиков в системе.
 
 ### 2. Анализ архитектуры монолитного приложения
 
-Перечислите здесь основные особенности текущего приложения: какой язык программирования используется, какая база данных, как организовано взаимодействие между компонентами и так далее.
+- **Язык программирования**: Java;
+- **База данных**: PostgreSQL;
+- **Архитектура**: Монолитная, все компоненты системы (обработка запросов, бизнес-логика, работа с данными) находятся в рамках одного приложения;
+- **Взаимодействие**: Синхронное, запросы обрабатываются последовательно;
+- **Масштабируемость**: Ограничена, так как монолит сложно масштабировать по частям;
+- **Развёртывание**: Требует остановки всего приложения. Downtime ~ 5-7 минут.
 
 ### 3. Определение доменов и границы контекстов
 
-Опишите здесь домены, которые вы выделили.
+- **Домен управления устройствами**. Данный домен отвечает за добавление\удаление устройств в систему, изменение параметров и включение\выключение;
+- **Домен мониторинга**. С заданной периодичностью опрашивает устройства, собирает метрики, предоставляет дашборды и графики для оценки состояния устройств;
+- **Домен уведомлений**. Рассылка оповещений пользователям системы;
+- **Домен учетных данных**. Предоставляет аутентификацию, авторизацию и хранение информации о пользователях, зарегистрированных в системе;
+- **Домен тех. поддержки**. Заведение заявок в систему, поддержка пользователей.
+- **Домен оплаты**. Предоставляет возможность оплаты услуг.
 
 ### **4. Проблемы монолитного решения**
 
-- …
-- …
-- …
+- **Масштабируемость**: отсутствует возможность масштабирования отдельных компонентов системы;
+- **Сложность релизов**: приходится согласовывать релиз со всеми командами, разрабатывающими монолитную систему;
+- **Снижение скорости поставки новых фич**: следствие из пункта выше;
+- **Надежность**: при любом сбое системы выходит из строя целиком (компоненты не доступны по отдельности).
 
-Если вы считаете, что текущее решение не вызывает проблем, аргументируйте свою позицию.
 
-### 5. Визуализация контекста системы — диаграмма С4
+### 5. Визуализация контекста системы — диаграмма С4
 
-Добавьте сюда диаграмму контекста в модели C4.
+[monolit_c4_context.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/monolit_c4_context.puml)
 
-Чтобы добавить ссылку в файл Readme.md, нужно использовать синтаксис Markdown. Это делают так:
+[monolit_c4_context.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/monolit_c4_context.png)
 
-```markdown
-[Текст ссылки](URL)
-```
-
-Замените `Текст ссылки` текстом, который хотите использовать для ссылки. Вместо `URL` вставьте адрес, на который должна вести ссылка. Например:
-
-```markdown
-[Посетите Яндекс](https://ya.ru/)
-```
 
 # Задание 2. Проектирование микросервисной архитектуры
 
-В этом задании вам нужно предоставить только диаграммы в модели C4. Мы не просим вас отдельно описывать получившиеся микросервисы и то, как вы определили взаимодействия между компонентами To-Be системы. Если вы правильно подготовите диаграммы C4, они и так это покажут.
-
 **Диаграмма контейнеров (Containers)**
 
-Добавьте диаграмму.
+[microservices_c4_container.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_container.puml)
+
+[microservices_c4_container.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_container.png)
 
 **Диаграмма компонентов (Components)**
 
-Добавьте диаграмму для каждого из выделенных микросервисов.
+Auth
+
+[microservices_c4_auth_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_auth_component.puml)
+
+[microservices_c4_auth_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_auth_component.png)
+
+Device Management
+
+[microservices_c4_dm_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_dm_component.puml)
+
+[microservices_c4_dm_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_dm_component.png)
+
+Monitoring
+
+[microservices_c4_monitoring_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_monitoring_component.puml)
+
+[microservices_c4_monitoring_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_monitoring_component.png)
+
+Notification
+
+[microservices_c4_notification_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_notification_component.puml)
+
+[microservices_c4_notification_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_notification_component.png)
+
+Payments
+
+[microservices_c4_payment_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_payment_component.puml)
+
+[microservices_c4_payment_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_payment_component.png)
+
+Support
+
+[microservices_c4_support_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_support_component.puml)
+
+[microservices_c4_support_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_support_component.png)
+
+Telemetry
+
+[microservices_c4_telemetry_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_telemetry_component.puml)
+
+[microservices_c4_telemetry_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_telemetry_component.png)
 
 **Диаграмма кода (Code)**
 
-Добавьте одну диаграмму или несколько.
+[microservices_c4_code.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_code.puml)
+
+[microservices_c4_code.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_code.png)
+
+
 
 # Задание 3. Разработка ER-диаграммы
 
-Добавьте сюда ER-диаграмму. Она должна отражать ключевые сущности системы, их атрибуты и тип связей между ними.
+[microservices_er_diagram.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_er_diagram.puml)
+
+[microservices_er_diagram.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_er_diagram.png)

@@ -1,0 +1,30 @@
+@startuml
+title Auth Service Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+System(client, "Web Site \n Mobile App", "Предоставляет пользователям доступ к системе")
+
+Container_Boundary(authSrv, "Еденица развертывания микросервиса AuthService") {
+  Container(microservice, "AuthService", "Java, Spring")
+  ContainerDb(db, "Auth DB", "PostgeSQL", "Хранение учетных данных и пользовательских профилей")
+}
+
+Container(microservice, "AuthService", "Java, Spring") {
+  Component(authController, "Auth Controller", "Аутентификация. Получение токенов.")
+  Component(profileController, "Profile Controller", "Создание, редактирование и удаление пользовательских профилей.")
+  Component(authService, "Auth Service", "Сервисный слой аутентификации.")
+  Component(profileService, "Profile Service", "Сервисный управление профилем.")
+  Component(authDAO, "Auth DAO", "Слой доступа к учетным данным")
+  Component(profileDAO, "Profile DAO", "Слой доступа к данным профиля")
+}
+
+Rel(client, authController, "REST \n HTTP")
+Rel(client, profileController, "REST \n HTTP")
+Rel(authController, authService, "Uses")
+Rel(profileController, profileService, "Uses")
+Rel(authService, authDAO, "Uses")
+Rel(profileService, profileDAO, "Uses")
+Rel(authDAO, db, "READ\WRITE \n SQL Queries")
+Rel(profileDAO, db, "READ\WRITE \n SQL Queries")
+@enduml

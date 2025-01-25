@@ -1,0 +1,134 @@
+@startuml
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Container.puml
+
+
+title Диаграмма классов для основных микросервисов системы "Умный дом"
+
+skinparam classAttributeIconSize 0
+
+Container_Boundary(deviceManager, "Микросервис DeviceManagement") {
+class Device {
+    -id: Long
+    -name: string
+    -owner: UUID
+    -ipAddress: String
+}
+enum DeviceStatus {
+    ACTIVE, INACTIVE, TEMPORARY_UNAVAILABLE, ERROR
+}
+class DeviceRegistrationRequest {
+    -name: String
+    -ipAddress: String
+    -owner: UUID
+}
+class DeviceManagerController {
+    +register(request:DeviceRegistrationRequest): Device
+    +unregister(id: Long): void
+    +getById(id: Long): Device
+    +getUserDevices(id: UUID): List<Device>
+}
+interface DeviceManagerService {
+    +register(request:DeviceRegistrationRequest): Device
+    +unregister(id: Long): void
+    +getById(id: Long): Device
+    +getUserDevices(id: UUID): List<Device>
+}
+class DeviceManagerServiceImpl {
+    -deviceDao: DeviceDAO
+    +register(request:DeviceRegistrationRequest): Device
+    +unregister(id: Long): void
+    +getById(id: Long): Device
+    +getUserDevices(id: UUID): List<Device>
+}
+class DeviceDAO {
+    +getById(id: Long): Device
+    +getUserDevices(id: UUID): List<Device>
+    add(device: Device): Device
+    deleteById(id: Long): Device
+}
+
+DeviceManagerController o-- DeviceManagerService : "Uses"
+DeviceManagerService <|.. DeviceManagerServiceImpl : "Implement"
+DeviceManagerServiceImpl o-- DeviceDAO : "Uses"
+Device *-- DeviceStatus : "Has"
+}
+
+Container_Boundary(monitoring, "Микросервис Monitoring") {
+class DeviceInfo {
+    -id: Long
+    -name: string
+    -status: DeviceStatus
+    -activeTime: Duration
+    -lastUpdate: DateTime
+    -errorCounter: Integer
+}
+enum DeviceStatus {
+    ACTIVE, INACTIVE, TEMPORARY_UNAVAILABLE, ERROR
+}
+class DeviceMonitoringController {
+    +getDeviceInfo(id: Long)): DeviceInfo
+    +loadReport(id: Long, from: DateTime, to: DateTime): String
+}
+interface DeviceMonitoringService {
+    +getDeviceInfo(id: Long)): DeviceInfo
+    +loadReport(id: Long, from: DateTime, to: DateTime): String
+}
+interface DeviceMonitoringServiceImpl {
+    -deviceMonitoringDao: DeviceMonitoringDao
+    -deviceReportFacade: DeviceReportFacade
+    +getDeviceInfo(id: Long)): DeviceInfo
+    +loadReport(id: Long, from: DateTime, to: DateTime): String
+}
+class DeviceMonitoringDao {
+    +getById(id: Long)): DeviceInfo
+}
+class DeviceReportFacade {
+    -ftpConnectionProperties: Properties
+    +loadReport(id: Long, from: DateTime, to: DateTime): String
+}
+DeviceInfo *-- DeviceStatus : "Has"
+DeviceMonitoringController o-- DeviceMonitoringService : "Uses"
+DeviceMonitoringService <|.. DeviceMonitoringServiceImpl : "Implement"
+DeviceMonitoringServiceImpl o-- DeviceMonitoringDao : "Uses"
+DeviceMonitoringServiceImpl o-- DeviceReportFacade : "Uses"
+}
+
+Container_Boundary(notification, "Микросервис Notification") {
+class Notification {
+    -id: UUID
+    -email: String
+    -phone: String
+    -content: String
+    -status: NotificationStatus
+    -dateTime: DateTime
+}
+enum NotificationStatus {
+    NEW, FAILED, COMPLETED
+}
+interface NotificationService {
+    +send(notification: Notification): void
+    +resend(id: UUID): void
+}
+class FirebaseNotificationService {
+    +send(notification: Notification): void
+    +resend(id: UUID): void
+}
+class NotificationDAO {
+    +save(notification: Notification): Notification
+    +findById(id: UUID): Notification
+    +findAllNew(): List<Notification>
+}
+class NotificationOutboxListener {
+    -notificationDao: NotificationDAO
+    -notificationService: NotificationService
+    +processNotifications(): void
+}
+Notification *-- NotificationStatus : "Has"
+NotificationService <|.. FirebaseNotificationService : "Implement"
+NotificationOutboxListener o-- NotificationDAO : "Uses"
+NotificationOutboxListener o-- NotificationService : "Uses"
+
+}
+
+@enduml
