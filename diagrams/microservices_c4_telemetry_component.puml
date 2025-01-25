@@ -1,0 +1,28 @@
+@startuml
+title Telemetry Service Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+System(client, "Web Site \n Mobile App", "Предоставляет пользователям доступ к системе")
+SystemQueue(kafka, "Kafka", "Топики: device_registration, device_telemetry")
+System_Ext(device, "External Devices", "Внешние устройства, подключенные к системе")
+
+Container_Boundary(telemetrySrv, "Еденица развертывания микросервиса TelemetryService") {
+  Container(microservice, "TelemetryService", "Java, Spring")
+  ContainerDb(db, "TelemetryService DB", "MongoDB", "Хранение телеметрических данных с устройств")
+}
+
+Container(microservice, "TelemetryService", "Java, Spring") {
+  Component(telemetryController, "Telemetry Controller", "Получение телеметрических данных с устройства")
+  Component(telemetryService, "Telemetry Service", "Сервисный слой, реализующий получение телеметрических данных устройства")
+  Component(telemetryDAO, "Telemetry DAO", "Слой доступа к данным")
+}
+
+Rel(client, telemetryController, "REST \n HTTP")
+Rel(telemetryController, telemetryService, "Uses")
+Rel(telemetryService, telemetryDAO, "Uses")
+Rel(telemetryService, device, "Получение информации с устройств", "WebSocket")
+Rel(telemetryDAO, db, "READ\WRITE \n Queries")
+Rel(telemetryService, kafka, "Отправка событий о состоянии внешних систем")
+Rel(kafka, telemetryService, "Чтение событий о вновь зарегистрированных устройствах")
+@enduml

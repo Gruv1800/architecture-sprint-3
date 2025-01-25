@@ -1,0 +1,30 @@
+@startuml
+title Device Manger Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+System(client, "Web Site \n Mobile App", "Предоставляет пользователям доступ к системе")
+SystemQueue(kafka, "Kafka", "Топики: device_registration")
+
+Container_Boundary(deviceManager, "Еденица развертывания микросервиса DeviceManagement") {
+  Container(microservice, "DeviceManagementService", "Java, Spring")
+  ContainerDb(db, "DeviceManagementService DB", "PostgreSQL", "Хранение информации об устройствах")
+}
+
+Container(microservice, "DeviceManagementService", "Java, Spring") {
+  Component(deviceRegistrationController, "Device Registration Controller", "Регистрация и снятие с регистрации устройств")
+  Component(deviceInfoController, "Device Info Controller", "Получение информации об устройствах")
+  Component(deviceRegistrationService, "Device Registration Service", "Сервисный слой, реализующий регистрацию и снятие с регистрации")
+  Component(deviceInfoService, "Device Info Service", "Сервисный слой для получение информации об устройствах")
+  Component(deviceDAO, "Device DAO", "Слой доступа к данным")
+}
+
+Rel(client, deviceRegistrationController, "REST \n HTTP")
+Rel(client, deviceInfoController, "REST \n HTTP")
+Rel(deviceRegistrationController, deviceRegistrationService, "Uses")
+Rel(deviceInfoController, deviceInfoService, "Uses")
+Rel(deviceRegistrationService, deviceDAO, "Uses")
+Rel(deviceRegistrationService, kafka, "Отправка событий регистрации и снятия с регистрации")
+Rel(deviceInfoService, deviceDAO, "Uses")
+Rel(deviceDAO, db, "READ\WRITE \n SQL Queries")
+@enduml

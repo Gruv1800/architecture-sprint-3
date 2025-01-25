@@ -1,0 +1,58 @@
+@startuml
+entity Device {
+    * id: NUMBER
+    * type_id: NUMBER <FK>
+    * house_id: NUMBER <FK>
+    * serial_NUMBER: VARCHAR
+    * status: DeviceStatus
+    * created_at: TIMESTAMP
+    * updated_at: TIMESTAMP
+}
+entity User {
+    * id: NUMBER
+    * email: VARCHAR
+    * created_at: TIMESTAMP
+    --
+    phone: VARCHAR
+    name: VARCHAR
+    verified: boolean
+    updated_at: TIMESTAMP
+}
+entity House {
+    * id: NUMBER
+    * user_id: NUMBER <FK>
+    * address: VARCHAR
+    * created_at: TIMESTAMP
+    --
+    updated_at: TIMESTAMP
+}
+entity DeviceType {
+    * id: NUMBER
+    * type: VARCHAR
+}
+entity Module {
+    * id: NUMBER
+    * device_id: NUMBER <FK>
+    * name: VARCHAR
+}
+entity Telemetry {
+    * id: NUMBER
+    * device_id: NUMBER <FK>
+    * name: VARCHAR
+    * value: VARCHAR
+    * created_at: TIMESTAMP
+    --
+    updated_at: TIMESTAMP
+}
+enum DeviceStatus {
+    ACTIVE
+    INACTIVE
+    ERROR
+}
+Device --> DeviceStatus
+User ||..o{ House
+House ||..o{ Module
+Module ||..o{ Device
+Device ||..|| DeviceType
+Device ||..o{ Telemetry
+@enduml

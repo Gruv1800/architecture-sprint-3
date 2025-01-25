@@ -28,6 +28,7 @@
 - **Домен уведомлений**. Рассылка оповещений пользователям системы;
 - **Домен учетных данных**. Предоставляет аутентификацию, авторизацию и хранение информации о пользователях, зарегистрированных в системе;
 - **Домен тех. поддержки**. Заведение заявок в систему, поддержка пользователей.
+- **Домен оплаты**. Предоставляет возможность оплаты услуг.
 
 ### **4. Проблемы монолитного решения**
 
@@ -46,20 +47,66 @@
 
 # Задание 2. Проектирование микросервисной архитектуры
 
-В этом задании вам нужно предоставить только диаграммы в модели C4. Мы не просим вас отдельно описывать получившиеся микросервисы и то, как вы определили взаимодействия между компонентами To-Be системы. Если вы правильно подготовите диаграммы C4, они и так это покажут.
-
 **Диаграмма контейнеров (Containers)**
 
-Добавьте диаграмму.
+[microservices_c4_container.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_container.puml)
+
+[microservices_c4_container.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_container.png)
 
 **Диаграмма компонентов (Components)**
 
-Добавьте диаграмму для каждого из выделенных микросервисов.
+Auth
+
+[microservices_c4_auth_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_auth_component.puml)
+
+[microservices_c4_auth_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_auth_component.png)
+
+Device Management
+
+[microservices_c4_dm_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_dm_component.puml)
+
+[microservices_c4_dm_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_dm_component.png)
+
+Monitoring
+
+[microservices_c4_monitoring_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_monitoring_component.puml)
+
+[microservices_c4_monitoring_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_monitoring_component.png)
+
+Notification
+
+[microservices_c4_notification_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_notification_component.puml)
+
+[microservices_c4_notification_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_notification_component.png)
+
+Payments
+
+[microservices_c4_payment_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_payment_component.puml)
+
+[microservices_c4_payment_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_payment_component.png)
+
+Support
+
+[microservices_c4_support_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_support_component.puml)
+
+[microservices_c4_support_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_support_component.png)
+
+Telemetry
+
+[microservices_c4_telemetry_component.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_telemetry_component.puml)
+
+[microservices_c4_telemetry_component.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_telemetry_component.png)
 
 **Диаграмма кода (Code)**
 
-Добавьте одну диаграмму или несколько.
+[microservices_c4_code.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_code.puml)
+
+[microservices_c4_code.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_c4_code.png)
+
+
 
 # Задание 3. Разработка ER-диаграммы
 
-Добавьте сюда ER-диаграмму. Она должна отражать ключевые сущности системы, их атрибуты и тип связей между ними.
+[microservices_er_diagram.puml](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_er_diagram.puml)
+
+[microservices_er_diagram.png](https://github.com/Gruv1800/architecture-sprint-3/blob/sprint_3/diagrams/microservices_er_diagram.png)

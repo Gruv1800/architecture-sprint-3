@@ -1,0 +1,25 @@
+@startuml
+title Support Service Component Diagram
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Component.puml
+
+System(client, "Web Site \n Mobile App", "Предоставляет администраторам доступ к системе")
+SystemQueue(kafka, "Kafka", "Топики: notification")
+
+Container_Boundary(supportSrv, "Еденица развертывания микросервиса SupportService") {
+  Container(microservice, "SupportService", "Java, Spring")
+  ContainerDb(db, "SupportService DB", "PostgeSQL", "Хранение информации об обращениях в службу поддержки")
+}
+
+Container(microservice, "SupportService", "Java, Spring") {
+  Component(supportController, "Support Controller", "Создание и обновление статусов пользовательских обращений в службу тех. поддержки")
+  Component(supportService, "Support Service", "Сервисный слой, реализующий управление пользовательскими обращениями")
+  Component(supportDAO, "Support DAO", "Слой доступа к данным")
+}
+
+Rel(client, supportController, "REST \n HTTP")
+Rel(supportController, supportService, "Uses")
+Rel(supportService, supportDAO, "Uses")
+Rel(supportDAO, db, "READ\WRITE \n SQL Queries")
+Rel(supportService, kafka, "Отправка событий о регистрации и смене статуса заявки")
+@enduml

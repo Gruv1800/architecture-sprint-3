@@ -1,0 +1,69 @@
+@startuml
+title Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Container.puml
+
+Person(user, "User")
+Person(admin, "Administrator")
+
+Container(site, "Web Site", "JS\React", На сайте предоставлен расширенный функционал для пользователей и администраторов системы)
+Container(mobileApp, "Mobile APP", "Swift\Kotlin", В мобильном приложении предоставляется базовый функционал для мониторинга и управления устройствами а так же возможность приема заявок администраторами)
+Container_Ext(device, "Device", "Устройство, подключенное к системе")
+Container_Ext(extPaymentSystem, "External Payment Gateway", "Платежный шлюз")
+Container_Ext(firebase, "Firebase Cloud Messaging", "Облачная платформа рассылки уведомлений")
+
+System_Boundary(c1, "Тёплый дом") {
+  Container(ApiGateway, "API Gateway")
+  SystemQueue(Queue, "Kafka", "Topics: device_status, device_new, device_telemetry, notifications")
+
+  Container(DeviceManagement, "DeviceManagementService", "Java, Spring Framework", "Управление устройствами")
+  Container(Monitoring, "MonitoringService", "Java, Spring Framework", "Предоставляет информацию о состоянии устройств")
+  Container(AuthService, "AuthService", "Java, Spring Framework", "Аутентификация\авторизация и управление профилями пользователей")
+  Container(Support, "SupportService", "Java, Spring Framework", "Управление обращениями в службу поддержки")
+  Container(Telemetry, "TelemetryService", "Java, Spring Framework", "Производит сбор и преобразование телеметрических данных с устройств")
+  Container(Notification, "NotificationService", "Java, Spring Framework", "Отправка уведомлений пользователям системы")
+  Container(Payment, "PaymentService", "Java, Spring Framework", "Процессинг платежей")
+
+  ContainerDb(DeviceManagementDB, "DB", "RDBMS", "Информация о зарегистрированных устройствах")
+  ContainerDb(MonitoringDB, "DB", "RDBMS с оптимизацией на чтение", "Aгрегированная информация по устройствам (метрики, показатели, события)")
+  ContainerDb(AuthDB, "DB", "RDBMS с оптимизацией на чтение", "Учетная информация пользователей")
+  ContainerDb(SupportDB, "DB", "RDBMS", "Информация пользовательских обращений")
+  ContainerDb(TelemetryDB, "DB", "NoSQL с шардированием и репликацией", "Телеметрическая информация")
+  ContainerDb(NotificationDB, "DB", "RDBMS", "Уведомления")
+  ContainerDb(PaymentDB, "DB", "RDBMS", "Платежи")
+}
+
+
+Rel(user, site, "Мониторинг, регистрация устройств, управление")
+Rel(admin, site, "Прием заявок, управление устройствами")
+Rel(user, mobileApp, "Мониторинг, регистрация устройств, управление")
+Rel(admin, mobileApp, "Прием заявок, управление устройствами")
+
+Rel(site, ApiGateway, "[REST \n HTTP]")
+Rel(mobileApp, ApiGateway, "[REST \n HTTP]")
+
+Rel(ApiGateway, Payment, "REST/HTTP")
+Rel(ApiGateway, DeviceManagement, "REST/HTTP")
+Rel(ApiGateway, AuthService, "REST/HTTP")
+Rel(ApiGateway, Monitoring, "REST/HTTP")
+Rel(ApiGateway, Support, "REST/HTTP")
+Rel(ApiGateway, Telemetry, "REST/HTTP")
+
+Rel(DeviceManagement, Queue, "READ \n WRITE")
+Rel(DeviceManagement, DeviceManagementDB, "READ \n WRITE")
+Rel(Monitoring, MonitoringDB, "READ \n WRITE")
+Rel(Monitoring, Queue, "READ \n WRITE")
+Rel(AuthService, AuthDB, "READ \n WRITE")
+Rel(Support, SupportDB, "READ \n WRITE")
+Rel(Support, AuthService, "READ \n WRITE")
+Rel(Telemetry, TelemetryDB, "READ \n WRITE")
+Rel(Telemetry, device, "WEB Socket")
+Rel(Telemetry, Queue, "WRITE")
+Rel(Payment, PaymentDB, "READ \n WRITE")
+Rel(Payment, extPaymentSystem, "REST/HTTP")
+Rel(Notification, NotificationDB, "READ \n WRITE")
+Rel(Notification, Queue, "READ")
+Rel(Notification, firebase, "REST/HTTP")
+@enduml
